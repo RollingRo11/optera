@@ -25,6 +25,12 @@ env/
 ENV/
 .venv
 
+# Python cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
 # Environment variables
 .env
 .env.local
@@ -47,6 +53,10 @@ yarn-error.log*
 dist/
 dist-ssr/
 *.local
+
+# Vite
+web/node_modules/.vite/
+web/dist/
 
 # Logs
 logs/
