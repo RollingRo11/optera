@@ -1,4 +1,9 @@
-const API_BASE_URL = 'http://localhost:8000';
+const DEFAULT_API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL =
+  (typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    import.meta.env.VITE_API_BASE_URL) ||
+  DEFAULT_API_BASE_URL;
 
 export interface MaraPrice {
   energy_price: number;
@@ -103,13 +108,26 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
+  private buildUrl(endpoint: string): string {
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      return endpoint;
+    }
+
+    const normalizedBase = this.baseUrl.replace(/\/+$/, '');
+    const normalizedEndpoint = endpoint.replace(/^\/+/, '');
+    return `${normalizedBase}/${normalizedEndpoint}`;
+  }
+
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = this.buildUrl(endpoint);
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
+    const response = await fetch(url, {
       ...options,
+      headers,
     });
 
     if (!response.ok) {
@@ -119,55 +137,62 @@ class ApiClient {
     return response.json();
   }
 
+  // Fetch live status from backend
   async getStatus(): Promise<{ site_status: SiteStatus; current_prices: MaraPrice[]; btc_data: BTCData }> {
-    return this.request('/status');
+    return this.request<{ site_status: SiteStatus; current_prices: MaraPrice[]; btc_data: BTCData }>('/status');
   }
 
+  // Optimize allocation through backend agent
   async optimizeAllocation(request: AllocationRequest): Promise<AllocationResponse> {
-    return this.request('/allocate', {
+    return this.request<AllocationResponse>('/allocate', {
       method: 'POST',
       body: JSON.stringify(request),
     });
   }
 
+  // Deploy allocation via backend
   async deployAllocation(allocation: { [key: string]: number }): Promise<any> {
-    return this.request('/deploy', {
+    return this.request<{ status: string; allocation: { [key: string]: number }; result?: any }>('/deploy', {
       method: 'POST',
       body: JSON.stringify(allocation),
     });
   }
 
+  // Retrieve market intelligence summary
   async getMarketIntelligence(): Promise<MarketIntelligence> {
-    return this.request('/market-intelligence');
+    return this.request<MarketIntelligence>('/market-intelligence');
   }
 
+  // Load live BTC metrics
   async getBTCData(): Promise<BTCData> {
-    return this.request('/btc');
+    return this.request<BTCData>('/btc');
   }
 
+  // Chat with AI assistant
   async sendChatMessage(message: string, context?: any): Promise<ChatResponse> {
-    return this.request('/chat', {
+    return this.request<ChatResponse>('/chat', {
       method: 'POST',
       body: JSON.stringify({ message, context }),
     });
   }
 
   async getSystemSummary(): Promise<SystemSummary> {
-    return this.request('/chat/summary');
+    return this.request<SystemSummary>('/chat/summary');
   }
 
   async getChatHistory(limit: number = 10): Promise<{ history: ChatHistoryItem[] }> {
-    return this.request(`/chat/history?limit=${limit}`);
+    return this.request<{ history: ChatHistoryItem[] }>(`/chat/history?limit=${limit}`);
   }
 
   async clearChatHistory(): Promise<{ status: string }> {
-    return this.request('/chat/history', {
+    return this.request<{ status: string }>('/chat/history', {
       method: 'DELETE',
     });
   }
 
+  // Fetch latest agent outputs
   async getAgentOutputs(): Promise<AgentOutputs> {
-    return this.request('/agents/outputs');
+    return this.request<AgentOutputs>('/agents/outputs');
   }
 }
 

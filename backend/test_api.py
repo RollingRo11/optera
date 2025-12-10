@@ -40,16 +40,16 @@ async def test_api():
             print(f"⚠ Site status error (expected if no site created): {e}")
         
         print("\n4. Testing allocation agent...")
-        anthropic_key = os.getenv("ANTHROPIC_API_KEY")
-        if anthropic_key:
-            agent = SimpleAllocationAgent(anthropic_key, mara_client)
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key:
+            agent = SimpleAllocationAgent(openai_key, mara_client)
             result = await agent.optimize_allocation(inference_priority=0.8)
             print("✓ Agent optimization completed")
             print(f"  Suggested allocation: {result['allocation']}")
             print(f"  Expected revenue: ${result['expected_revenue']:.2f}")
             print(f"  Efficiency score: {result['efficiency_score']:.1f}%")
         else:
-            print("⚠ No Anthropic API key found, skipping agent test")
+            print("⚠ No OpenAI API key found, skipping agent test")
         
         print("\n✅ All tests completed successfully!")
         

@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-langchain-anthropic
+langchain-openai
 python-dotenv
 requests
 pydantic

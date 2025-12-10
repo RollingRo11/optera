@@ -56,7 +56,7 @@ pip install -r requirements.txt
 
 2. Set environment variables in `.env`:
 ```
-ANTHROPIC_API_KEY=your_key_here
+OPENAI_API_KEY=your_openai_key_here
 MARA_API_KEY=your_mara_key_here
 ```
 
@@ -71,7 +71,7 @@ The API will be available at `http://localhost:8000`
 
 - **FastAPI**: Web framework for API endpoints
 - **LangGraph**: Agent workflow for resource allocation decisions
-- **Anthropic Claude**: LLM for market analysis and optimization
+- **OpenAI GPT-4o**: LLM for market analysis and optimization
 - **MARA Client**: Interface to MARA hackathon API
 
 ## Agent Workflow

@@ -26,11 +26,11 @@ app.add_middleware(
 mara_client = MaraClient(api_key=os.getenv("MARA_API_KEY"))
 btc_client = BTCClient()
 allocation_agent = SimpleAllocationAgent(
-    anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
     mara_client=mara_client
 )
 chatbot_agent = ChatbotAgent(
-    anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
     mara_client=mara_client,
     allocation_agent=allocation_agent
 )
@@ -65,8 +65,10 @@ async def root():
 async def get_status():
     """Get current site status from MARA API"""
     try:
-        site_status = await mara_client.get_site_status()
+        inventory = await mara_client.get_inventory()
         prices = await mara_client.get_current_prices()
+        site_status = await mara_client.get_site_status()
+        site_status = mara_client.apply_local_allocation(site_status, inventory, prices)
         btc_data = await btc_client.get_btc_data()
         return {
             "site_status": site_status,

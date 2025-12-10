@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../lib/api';
 
@@ -20,20 +20,23 @@ export const useAutoOptimizer = () => {
     },
   });
 
-  const runOptimization = async () => {
+  const runOptimization = useCallback(async () => {
     try {
       console.log('🤖 Running auto-optimization...');
       const result = await optimizeMutation.mutateAsync();
       
-      if (result.allocation) {
+      if (result && result.allocation) {
         console.log('📊 Deploying optimized allocation:', result.allocation);
         await deployMutation.mutateAsync(result.allocation);
         console.log('✅ Auto-optimization completed successfully');
+      } else {
+        console.warn('⚠️ No allocation returned from optimization');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Auto-optimization failed:', error);
+      console.error('Error details:', error?.message || error);
     }
-  };
+  }, [optimizeMutation, deployMutation]);
 
   useEffect(() => {
     // Run initial optimization after 5 seconds
@@ -47,10 +50,12 @@ export const useAutoOptimizer = () => {
     }, 30000);
 
     return () => {
-      if (initialTimeout) clearTimeout(initialTimeout);
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      clearTimeout(initialTimeout);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, []);
+  }, [runOptimization]);
 
   return {
     isOptimizing: optimizeMutation.isPending,

@@ -1,7 +1,7 @@
 from typing import Dict, Any, Optional, List, TypedDict
 import json
 from langgraph.graph import StateGraph, END
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from utils.mara_client import MaraClient
@@ -19,11 +19,11 @@ class AllocationState(TypedDict):
     efficiency_score: float
 
 class AllocationAgent:
-    def __init__(self, anthropic_api_key: str, mara_client: MaraClient):
+    def __init__(self, openai_api_key: str, mara_client: MaraClient):
         self.mara_client = mara_client
-        self.llm = ChatAnthropic(
-            model="claude-3-5-sonnet-20241022",
-            api_key=anthropic_api_key,
+        self.llm = ChatOpenAI(
+            model="gpt-4o",
+            api_key=openai_api_key,
             temperature=0.1
         )
         self.graph = self._build_graph()

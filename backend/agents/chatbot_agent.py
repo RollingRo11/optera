@@ -1,16 +1,16 @@
 from typing import Dict, Any, Optional, List
 import json
 from datetime import datetime
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
 class ChatbotAgent:
     """Subagent for user-facing question answering and system summarization"""
     
-    def __init__(self, anthropic_api_key: str, mara_client, allocation_agent):
-        self.llm = ChatAnthropic(
-            model="claude-3-5-sonnet-20241022",
-            api_key=anthropic_api_key,
+    def __init__(self, openai_api_key: str, mara_client, allocation_agent):
+        self.llm = ChatOpenAI(
+            model="gpt-4o",
+            api_key=openai_api_key,
             temperature=0.3
         )
         self.mara_client = mara_client

@@ -13,14 +13,14 @@ const ProfitabilityChart = () => {
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
-  // Direct MARA API price fetching
+  // Use backend API for MARA price fetching (avoiding CORS issues)
   const fetchMaraPrices = useCallback(async () => {
     try {
-      console.log('🔄 Fetching MARA prices from API...');
-      const response = await fetch('https://mara-hackathon-api.onrender.com/prices');
-      if (response.ok) {
-        const newPrices: MaraPrice[] = await response.json();
-        console.log('📊 MARA API Prices fetched:', {
+      console.log('🔄 Fetching MARA prices from backend API...');
+      const response = await apiClient.getStatus();
+      if (response.current_prices) {
+        const newPrices: MaraPrice[] = response.current_prices;
+        console.log('📊 MARA API Prices fetched via backend:', {
           timestamp: new Date().toISOString(),
           pricesCount: newPrices.length,
           latestPrice: newPrices[0],
@@ -36,10 +36,10 @@ const ProfitabilityChart = () => {
         setPriceHistory(newPrices);
         setLastFetch(new Date());
       } else {
-        console.error('❌ API response not ok:', response.status, response.statusText);
+        console.error('❌ No price data in backend response');
       }
     } catch (error) {
-      console.error('❌ Failed to fetch MARA prices:', error);
+      console.error('❌ Failed to fetch MARA prices from backend:', error);
     }
   }, []);
 

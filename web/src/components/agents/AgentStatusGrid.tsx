@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 
 const agents = [
-  { name: "SimpleAllocationAgent", description: "Primary Claude 4 Sonnet agent optimizing resource allocation between mining and AI inference.", category: "Execution" },
-  { name: "ChatbotAgent", description: "Claude 4 Sonnet subagent providing user-facing system insights and Q&A.", category: "Interface" },
+  { name: "SimpleAllocationAgent", description: "Primary GPT-4o agent optimizing resource allocation between mining and AI inference.", category: "Execution" },
+  { name: "ChatbotAgent", description: "GPT-4o subagent providing user-facing system insights and Q&A.", category: "Interface" },
   { name: "MaraClient", description: "Live integration with MARA platform APIs for real-time site data and deployment.", category: "Integration" },
   { name: "BTCClient", description: "Real-time Bitcoin market data fetching via Yahoo Finance API.", category: "Market Data" }
 ];

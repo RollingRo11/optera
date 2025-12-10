@@ -20,7 +20,7 @@ const AiMarketIndicators = () => {
 
   const apiPricing = [
     { provider: 'OpenAI (GPT-4o)', price: '$0.0025/1k tok', change: '+2.1%' },
-    { provider: 'Anthropic (Claude 3.5)', price: '$0.003/1k tok', change: '0%' },
+    { provider: 'OpenAI (GPT-4o)', price: '$0.003/1k tok', change: '0%' },
     { provider: 'Local Model', price: '$0.002/1k tok (est.)', change: '-5.2%' }
   ];
 

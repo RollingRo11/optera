@@ -1,0 +1,5 @@
+# Netlify redirects for API proxy
+/api/* http://18.118.173.17/:splat 200
+
+
+
